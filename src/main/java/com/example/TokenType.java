@@ -5,6 +5,9 @@ public enum TokenType {
     TYPE,
     IDENT,
     SEMICOLON,
+    DOT,
+    PLUS,
     ASSIGN,
     INTEGER,
+    FLOAT,
 }
