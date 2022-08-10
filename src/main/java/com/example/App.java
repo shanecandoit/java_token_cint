@@ -8,6 +8,7 @@ import java.util.Arrays;
  * Interpreter repl or take files.
  */
 public class App {
+
     public static void main(String[] args) {
         System.out.println("Hello World!");
 
@@ -19,11 +20,11 @@ public class App {
         Token[] tokens = tokenizer.tokens;
         System.out.println("tokens = " + Arrays.toString(tokens));
 
-        String want = "[Token{text=int, type=TYPE}, Token{text=num, type=IDENT}, Token{text==, type=ASSIGN}, Token{text=12, type=INTEGER}, Token{text=;, type=SEMICOLON}]";
+        String want = "[Token{text=char, type=TYPE}, Token{text=greetings, type=IDENT}, Token{text=[, type=BRACK_OPEN}, Token{text=], type=BRACK_CLOSE}, Token{text==, type=ASSIGN}, Token{text=\"Hello World!\", type=STRING}, Token{text=;, type=SEMICOLON}]";
         boolean ok = Arrays.toString(tokens).equals(want);
         System.out.println("ok=" + ok);
 
-        replPrompt();
+        // replPrompt();
     }
 
     private static void replPrompt() {
