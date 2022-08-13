@@ -1,8 +1,8 @@
 package com.example;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class Tokenizer {
 
@@ -11,22 +11,10 @@ public class Tokenizer {
     public final String input;
 
     public Tokenizer(String input) {
-        this.input = input;
+        this.input = input == null ? "" : input;
 
-        // lexemes
-        String delimeters = " \n\t.;:',=";
-        // StringTokenizer(String str, String delim, boolean returnDelims)
-        StringTokenizer st = new StringTokenizer(input, delimeters, true);
-        List<String> parts = new ArrayList<>();
-        while (st.hasMoreTokens()) {
-            // for (String str : st.) {
-            String str = st.nextToken();
-            if (!str.isBlank()) {
-                parts.add(str);
-            }
-        }
-
-        this.lexemes = parts.toArray(new String[0]);
+        Lexer lexer = new Lexer(input);
+        this.lexemes = lexer.lexemes;
 
         this.tokens = tokenize(this.lexemes);
     }
@@ -44,8 +32,8 @@ public class Tokenizer {
     @Override
     public String toString() {
         return "Tokenizer{"
-                + "lexemes=" + lexemes
-                + ", tokens=" + tokens
+                + "lexemes=" + Arrays.toString(lexemes)
+                + ", tokens=" + Arrays.toString(tokens)
                 + ", input=\"" + input + "\""
                 + "}";
     }
