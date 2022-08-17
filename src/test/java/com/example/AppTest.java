@@ -27,6 +27,52 @@ public class AppTest {
     }
 
     /**
+     * Test statement of var assign int
+     */
+    @Test
+    public void testStatementAssign() {
+
+        String input = "int num=12;";
+        Tokenizer tokenizer = new Tokenizer(input);
+        Token[] tokens = tokenizer.tokens;
+        String wantTokens = "[Token{text=int, type=TYPE}, Token{text=num, type=IDENT}, Token{text==, type=ASSIGN}, Token{text=12, type=INTEGER}, Token{text=;, type=SEMICOLON}]";
+        boolean ok = Arrays.toString(tokens).equals(wantTokens);
+        System.out.println("ok=" + ok);
+
+        Parser parser = new Parser(tokens);
+        String statementsStr = parser.getProgramStatementsString();
+        String wantStatement = "[StatementAssign{name=num, value=ExprLiteral{value=Token{text=12, type=INTEGER}}}]";
+
+        assertTrue(statementsStr.equals(wantStatement));
+    }
+
+    /**
+     * Test statement of var assign int and evaluate
+     */
+    @Test
+    public void testStatementAssignEvaluate() {
+
+        String input = "int num=12;";
+        Tokenizer tokenizer = new Tokenizer(input);
+        Token[] tokens = tokenizer.tokens;
+        String wantTokens = "[Token{text=int, type=TYPE}, Token{text=num, type=IDENT}, Token{text==, type=ASSIGN}, Token{text=12, type=INTEGER}, Token{text=;, type=SEMICOLON}]";
+        boolean ok = Arrays.toString(tokens).equals(wantTokens);
+        System.out.println("ok=" + ok);
+
+        Parser parser = new Parser(tokens);
+        String statementsStr = parser.getProgramStatementsString();
+
+        System.out.println("statementsStr=" + statementsStr);
+        // [StatementAssign{name=num, value=ExprLiteral{value=Token{text=12,
+        // type=INTEGER}}}, ]
+
+        String result = parser.evaluate("num");
+        String wantResult = "12";
+
+        assertTrue(result.equals(wantResult));
+    }
+
+    /**
      * Test assinging an int to a variable
      */
     @Test

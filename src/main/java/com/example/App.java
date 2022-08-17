@@ -10,20 +10,15 @@ import java.util.Arrays;
 public class App {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        System.out.println("interpret:");
 
-        String input = "char greetings[] = \"Hello World!\";";
+        String input = "int num=12;";
+        Parser parser = new Parser(input);
 
-        Tokenizer tokenizer = new Tokenizer(input);
-        System.out.println("tokenizer = " + tokenizer);
+        String result = parser.evaluate("num");
+        System.out.println("result=" + result);
 
-        Token[] tokens = tokenizer.tokens;
-        System.out.println("tokens = " + Arrays.toString(tokens));
-
-        String want = "[Token{text=char, type=TYPE}, Token{text=greetings, type=IDENT}, Token{text=[, type=BRACK_OPEN}, Token{text=], type=BRACK_CLOSE}, Token{text==, type=ASSIGN}, Token{text=\"Hello World!\", type=STRING}, Token{text=;, type=SEMICOLON}]";
-        boolean ok = Arrays.toString(tokens).equals(want);
-        System.out.println("ok=" + ok);
-
+        // TODO get repl working, added to parser
         // replPrompt();
     }
 

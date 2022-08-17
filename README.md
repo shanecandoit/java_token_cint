@@ -1,8 +1,7 @@
-# java_token_cint
+# C interpreter
 
-An (eventual) interpreter for C in Java.
+Goals for an interpreter for C in Java.
  * C has loops, control, and structs, what else do you need?
- * Step through the code in main and produce DOT viz of it.
+ * Step through the code in main and produce DOT visualization of current state.
+ * visualize pointers and updates over time.
 
-Use this for DOT viz?
-https://github.com/nidi3/graphviz-java
