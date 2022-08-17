@@ -2,7 +2,6 @@ package com.example;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class Lexer {
 
@@ -14,9 +13,7 @@ public class Lexer {
     public Lexer(String input) {
         // lexemes
         // StringTokenizer(String str, String delim, boolean returnDelims)
-        StringTokenizer st = new StringTokenizer(input, delimeters, true);
         List<String> parts = new ArrayList<>();
-
 
         int line = 1;
         String string = "";
