@@ -12,11 +12,14 @@ public class App {
     public static void main(String[] args) {
         System.out.println("interpret:");
 
-        String input = "int num=12;";
+        String input = "int num=12;\n"
+                + "print(num);" +
+                "float pi=3.141593;" +
+                "print(pi);";
         Parser parser = new Parser(input);
 
-        String result = parser.evaluate("num");
-        System.out.println("result=" + result);
+        String statements = parser.getProgramStatementsString();
+        System.out.println("statements = " + statements);
 
         // TODO get repl working, added to parser
         // replPrompt();
@@ -40,7 +43,7 @@ public class App {
             }
             Tokenizer tokenizer = new Tokenizer(input);
             System.out.println("tokenizer = " + tokenizer);
-            Token[] tokens = tokenizer.tokens;
+            Token[] tokens = tokenizer.getTokens();
             System.out.println("tokens = " + Arrays.toString(tokens));
 
             // TODO add the tokens to the interpreter

@@ -7,15 +7,19 @@ import java.util.List;
 
 public class Parser {
 
-    public final Token[] tokens;
+    private Token[] tokens;
 
-    private List<Statement> programStatements;
+    private List<Statement> programStatements = new ArrayList<>();
 
-    private HashMap<String, Object> environment;
+    // errors
+    private List<String> errors = new ArrayList<>();
+    // from print statements, all state in parser right now
+    private List<String> prints = new ArrayList<>();
+
+    private HashMap<String, Object> environment = new HashMap<>();
 
     public Parser(Token[] tokens) {
         this.tokens = tokens;
-        this.environment = new HashMap<>();
 
         // assume we have a list of statements
         this.programStatements = parseStatements(this.tokens);
@@ -24,7 +28,7 @@ public class Parser {
 
     public Parser(String input) {
         Tokenizer tokenizer = new Tokenizer(input);
-        Token[] tokens = tokenizer.tokens;
+        Token[] tokens = tokenizer.getTokens();
 
         this.tokens = tokens;
         this.environment = new HashMap<>();
@@ -32,39 +36,96 @@ public class Parser {
         this.programStatements = parseStatements(this.tokens);
     }
 
+    public Token[] getTokens() {
+        return Arrays.copyOf(this.tokens, this.tokens.length);
+    }
+
+    public String getTokensString() {
+        return Arrays.toString(getTokens());
+    }
+
     private List<Statement> parseStatements(Token[] tokens) {
 
         List<Statement> statements = new ArrayList<>();
 
-        // huh
-        if (this.environment == null) {
-            this.environment = new HashMap<>();
+        for (int i = 0; i < tokens.length; i++) {
+
+            Token token = tokens[i];
+
+            // switch over token type
+            switch (token.type) {
+                case TYPE: {
+                    // assignment?
+                    if (tokens.length >= i + 3
+                            && tokens[i + 0].type == TokenType.TYPE
+                            && tokens[i + 1].type == TokenType.IDENT
+                            && tokens[i + 2].type == TokenType.ASSIGN
+                            &&
+                            (tokens[i + 3].type == TokenType.INTEGER
+                                    || tokens[i + 3].type == TokenType.FLOAT
+                                    || tokens[i + 3].type == TokenType.STRING)
+                            && tokens[i + 4].type == TokenType.SEMICOLON) {
+                        String name = tokens[i + 1].text;
+                        Object value = tokens[i + 3].text;
+
+                        if (tokens[i + 3].type == TokenType.INTEGER) {
+                            value = Integer.parseInt(tokens[i + 3].text);
+                        }
+
+                        StatementAssign assignment = new StatementAssign(tokens[i + 1].text,
+                                new ExprLiteral(name, value));
+
+                        statements.add(assignment);
+
+                        this.environment.put(name, value);
+                        i += 4;
+                    }
+                }
+                break;
+
+                case PRINT: {
+                    //5 = {Token@834} "Token{text=print, type=PRINT}"
+                    //6 = {Token@847} "Token{text=(, type=PAREN_OPEN}"
+                    //7 = {Token@848} "Token{text=num, type=IDENT}"
+                    //8 = {Token@849} "Token{text=), type=PAREN_CLOSE}"
+                    //9 = {Token@850} "Token{text=;, type=SEMICOLON}"
+//                    int count = 5;
+                    if (tokens.length >= i + 4
+                            && tokens[i + 0].type == TokenType.PRINT
+                            && tokens[i + 1].type == TokenType.PAREN_OPEN
+                            && tokens[i + 2].type == TokenType.IDENT // TODO or literal
+                            && tokens[i + 3].type == TokenType.PAREN_CLOSE
+                            && tokens[i + 4].type == TokenType.SEMICOLON
+                    ) {
+                        // System.out.println("PRINT"+ tokens[i + 2]);
+                        String name = tokens[i + 2].text;
+                        Object val = this.environment.get(name);
+
+                        // if no such var in a C program?
+                        // spage@spage-l:~/ctest$ tcc no_var_name.c
+                        // no_var_name.c:4: error: 'num' undeclared
+                        // if (!this.environment.containsKey(name)) {
+                        //     this.errors.add("Error '"+name+"' undeclared.");
+                        // }
+
+                        Statement print = new StatementPrint(new ExprLiteral(name, val));
+                        // NOTE: just print it here?
+                        System.out.println(val);
+                        statements.add(print);
+
+                        this.prints.add(val.toString());
+                        i += 4;
+                    }
+
+                }
+                break;
+                default: {
+                    // throw exception ?
+                    System.out.println("Parser: Unexpected Token:" + token);
+                    break;
+                }
+            } // switch (token.type)
         }
-
-        // assignment?
-        if (tokens.length >= 3
-                && tokens[0].type == TokenType.TYPE
-                && tokens[1].type == TokenType.IDENT
-                && tokens[2].type == TokenType.ASSIGN
-                &&
-                (tokens[3].type == TokenType.INTEGER
-                        || tokens[3].type == TokenType.FLOAT
-                        || tokens[3].type == TokenType.STRING)
-                && tokens[4].type == TokenType.SEMICOLON) {
-            String name = tokens[1].text;
-            Object value = tokens[3].text;
-
-            if (tokens[3].type == TokenType.INTEGER) {
-                value = Integer.parseInt(tokens[3].text);
-            }
-
-            statements.add(new StatementAssign(tokens[1].text,
-                    new ExprLiteral(tokens[3])));
-
-            this.environment.put(name, value);
-        }
-
-        // this.environment = new HashMap<>();
 
         return statements;
     }
@@ -87,7 +148,7 @@ public class Parser {
 
     public String evaluate(String string) {
         Object value = this.environment.get(string);
-        String result = value.toString();
+        String result = value == null ? "" : value.toString();
         return result;
     }
 

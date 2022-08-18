@@ -7,7 +7,7 @@ import java.util.List;
 public class Tokenizer {
 
     public final String[] lexemes;
-    public final Token[] tokens;
+    private Token[] tokens;
     public final String input;
 
     public Tokenizer(String input) {
@@ -17,6 +17,10 @@ public class Tokenizer {
         this.lexemes = lexer.lexemes;
 
         this.tokens = tokenize(this.lexemes);
+    }
+
+    public Token[] getTokens() {
+        return Arrays.copyOf(this.tokens, this.tokens.length);
     }
 
     private Token[] tokenize(String[] lexemes2) {

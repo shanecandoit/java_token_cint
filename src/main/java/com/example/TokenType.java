@@ -9,8 +9,11 @@ public enum TokenType {
     PLUS,
     BRACK_OPEN,
     BRACK_CLOSE,
+    PAREN_OPEN,
+    PAREN_CLOSE,
     ASSIGN,
     INTEGER,
     FLOAT,
     STRING,
+    PRINT,
 }

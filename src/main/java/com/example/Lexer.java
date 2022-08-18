@@ -23,7 +23,7 @@ public class Lexer {
         char[] chars = input.toCharArray();
         for (int i = 0; i < chars.length; i++) {
             ch = input.charAt(i);
-            // prev = parts.size() > 0 ? parts.get(parts.size() - 1) : "";
+
             // string literals
             if (ch == '"') {
                 string += input.charAt(i);
@@ -80,6 +80,8 @@ public class Lexer {
                     continue;
                 } else {
                     string = "" + ch;
+                    parts.add(string);
+                    string = "";
                 }
             } else {
                 // grew the word

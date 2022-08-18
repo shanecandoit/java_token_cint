@@ -4,7 +4,7 @@ public class StatementPrint extends Statement {
 
     public final Expr value;
 
-    public StatementPrint(String name, ExprLiteral value) {
+    public StatementPrint(ExprLiteral value) {
         this.value = value;
     }
 

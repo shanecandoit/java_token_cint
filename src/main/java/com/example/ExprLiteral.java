@@ -4,7 +4,7 @@ public class ExprLiteral extends Expr {
 
     public final Object value;
 
-    public ExprLiteral(Object obj) {
+    public ExprLiteral(String name, Object obj) {
         super(obj);
         this.value = obj;
     }

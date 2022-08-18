@@ -28,6 +28,13 @@ public class Token {
             this.type = TokenType.BRACK_OPEN;
         } else if (text.equals("]")) {
             this.type = TokenType.BRACK_CLOSE;
+        } else if (text.equals("(")) {
+            this.type = TokenType.PAREN_OPEN;
+        } else if (text.equals(")")) {
+            this.type = TokenType.PAREN_CLOSE;
+        } else if (text.toLowerCase().equals("print")) {
+            // print is a special keyword function
+            this.type = TokenType.PRINT;
         } else if (isAlpha(text)) {
             this.type = TokenType.IDENT;
         } else if (isInt(text)) {
