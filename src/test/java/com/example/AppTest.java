@@ -3,6 +3,7 @@ package com.example;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -159,10 +160,10 @@ public class AppTest {
     public void testIntAssignmentAndEvaluate() {
 
         String input = "int num=12;\n"
-                +"print(num);";
+                + "print(num);";
         Parser parser = new Parser(input);
 
-        System.out.println("parser.tokens="+parser.getTokensString());
+        System.out.println("parser.tokens=" + parser.getTokensString());
         String tokensGet = parser.getTokensString();
 
         String tokensWant = "[Token{text=int, type=TYPE}, Token{text=num, type=IDENT}, Token{text==, type=ASSIGN}, Token{text=12, type=INTEGER}, Token{text=;, type=SEMICOLON}, Token{text=print, type=PRINT}, Token{text=(, type=PAREN_OPEN}, Token{text=num, type=IDENT}, Token{text=), type=PAREN_CLOSE}, Token{text=;, type=SEMICOLON}]";
@@ -187,18 +188,39 @@ public class AppTest {
     public void testIntFloatPrint() {
 
         String input = "int num=12;\n"
-                +"print(num);" +
+                + "print(num);" +
                 "float pi=3.141593;" +
                 "print(pi);";
         Parser parser = new Parser(input);
 
         String statementsGot = parser.getProgramStatementsString();
         System.out.println("statementsGot=" + statementsGot);
-        String statementsWant="[StatementAssign{name=num, value=ExprLiteral{value=12}}, StatementPrint{value=ExprLiteral{value=12}}, StatementAssign{name=pi, value=ExprLiteral{value=3.141593}}, StatementPrint{value=ExprLiteral{value=3.141593}}]";
+        String statementsWant = "[StatementAssign{name=num, value=ExprLiteral{value=12}}, StatementPrint{value=ExprLiteral{value=12}}, StatementAssign{name=pi, value=ExprLiteral{value=3.141593}}, StatementPrint{value=ExprLiteral{value=3.141593}}]";
 
         boolean statementsOk = statementsGot.equals(statementsWant);
         System.out.println("statementsOk=" + statementsOk);
 
         assertTrue(statementsOk);
+    }
+
+    /**
+     * Test printing missing variable error
+     */
+    @Test
+    public void testVarUndeclaredError() {
+
+        String input = "int num=12;\n"
+                + "print(nm);";
+        Parser parser = new Parser(input);
+
+        String statements = parser.getProgramStatementsString();
+        System.out.println("statements = " + statements);
+
+        List<String> errors = parser.getErrors();
+        System.out.println("errors.get(0) = " + errors.get(0));
+        String errorGot = errors.get(0);
+        String errorWant = "Error 'nm' undeclared.";
+
+        assertTrue(errorGot.equals(errorWant));
     }
 }

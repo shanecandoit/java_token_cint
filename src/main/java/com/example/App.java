@@ -3,6 +3,7 @@ package com.example;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Interpreter repl or take files.
@@ -13,13 +14,16 @@ public class App {
         System.out.println("interpret:");
 
         String input = "int num=12;\n"
-                + "print(num);" +
-                "float pi=3.141593;" +
-                "print(pi);";
+                + "print(nm);";
         Parser parser = new Parser(input);
 
         String statements = parser.getProgramStatementsString();
         System.out.println("statements = " + statements);
+
+        List<String> errors = parser.getErrors();
+        System.out.println("errors.get(0) = " + errors.get(0));
+        String errorGot = errors.get(0);
+        String errorWant = "Error 'nm' undeclared.";
 
         // TODO get repl working, added to parser
         // replPrompt();

@@ -18,12 +18,16 @@ public class Parser {
 
     private HashMap<String, Object> environment = new HashMap<>();
 
-    public Parser(Token[] tokens) {
+    public Parser(Token[] tokens)  {
         this.tokens = tokens;
 
         // assume we have a list of statements
-        this.programStatements = parseStatements(this.tokens);
-
+        try {
+            this.programStatements = parseStatements(this.tokens);
+        }catch (Exception e) {
+            System.out.println("Parser error = " + e.getMessage());
+            errors.add(e.getMessage());
+        }
     }
 
     public Parser(String input) {
@@ -33,7 +37,12 @@ public class Parser {
         this.tokens = tokens;
         this.environment = new HashMap<>();
 
-        this.programStatements = parseStatements(this.tokens);
+        try {
+            this.programStatements = parseStatements(this.tokens);
+        }catch (Exception e){
+            System.out.println("Parser error = " + e.getMessage());
+            errors.add(e.getMessage());
+        }
     }
 
     public Token[] getTokens() {
@@ -44,7 +53,7 @@ public class Parser {
         return Arrays.toString(getTokens());
     }
 
-    private List<Statement> parseStatements(Token[] tokens) {
+    private List<Statement> parseStatements(Token[] tokens) throws Exception {
 
         List<Statement> statements = new ArrayList<>();
 
@@ -97,16 +106,18 @@ public class Parser {
                             && tokens[i + 3].type == TokenType.PAREN_CLOSE
                             && tokens[i + 4].type == TokenType.SEMICOLON
                     ) {
-                        // System.out.println("PRINT"+ tokens[i + 2]);
                         String name = tokens[i + 2].text;
                         Object val = this.environment.get(name);
 
                         // if no such var in a C program?
                         // spage@spage-l:~/ctest$ tcc no_var_name.c
                         // no_var_name.c:4: error: 'num' undeclared
-                        // if (!this.environment.containsKey(name)) {
-                        //     this.errors.add("Error '"+name+"' undeclared.");
-                        // }
+                        if (!this.environment.containsKey(name)) {
+                            String errorMessage = "Error '"+name+"' undeclared.";
+                            this.errors.add(errorMessage);
+                            // throw new Exception(errorMessage);
+                            return statements;
+                        }
 
                         Statement print = new StatementPrint(new ExprLiteral(name, val));
                         // NOTE: just print it here?
@@ -137,13 +148,6 @@ public class Parser {
     public String getProgramStatementsString() {
         Statement[] statements = this.programStatements.toArray(new Statement[0]);
         return Arrays.toString(statements);
-        // return Arrays.toString(programStatements);
-        // String string = "[";
-        // for (Statement stat : getProgramStatements()) {
-        // string += stat.toString() + ", ";
-        // }
-        // string += "]";
-        // return string;
     }
 
     public String evaluate(String string) {
@@ -152,4 +156,12 @@ public class Parser {
         return result;
     }
 
+    public List<String> getErrors() {
+        return this.errors;
+    }
+    public void printErrors() {
+        for (String error: this.errors){
+            System.out.println(error);
+        }
+    }
 }
