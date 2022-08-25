@@ -9,19 +9,27 @@ public class Lexer {
     public final String[] lexemes;
     public final String delimeters = " \n\t.;:'\",=[](){}";
 
+    private char[] chars;
+    private int i;
+    private String string;
+    private int line;
+
+    public Lexer(String input){
+        this.lexemes = lex(input);
+    }
     // StringTokenizer(String str, String delim, boolean returnDelims)
-    public Lexer(String input) {
+    public String[] lex(String input) {
         // lexemes
         // StringTokenizer(String str, String delim, boolean returnDelims)
         List<String> parts = new ArrayList<>();
 
-        int line = 1;
-        String string = "";
+        this.line = 1;
+        this.string = "";
         // String prev = "";
         char ch = '\0';
 
-        char[] chars = input.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
+        this.chars = input.toCharArray();
+        for (this.i = 0; i < chars.length; i++) {
             ch = input.charAt(i);
 
             // string literals
@@ -36,8 +44,9 @@ public class Lexer {
                         break;
                     } else if (input.charAt(i) == '\n') {
                         System.out.println("Err new line encountered mid-string." + line + ":" + string);
-                        this.lexemes = parts.toArray(new String[0]);
-                        return;
+//                        this.lexemes = parts.toArray(new String[0]);
+                        //return parts.toArray(new String[0]);
+                        break;
                     }
                     string += input.charAt(i);
                 }
@@ -67,6 +76,12 @@ public class Lexer {
                 } catch (Exception e) {
                     continue;
                 }
+            } else if (ch==' '||ch=='\t'){
+                if (string.length()>1){
+                    parts.add(string);
+                }
+                string="";
+                continue;
             }
 
             // newest char is a delimeter
@@ -76,9 +91,11 @@ public class Lexer {
                     parts.add(string);
                 }
                 if (ch == ' ' || ch == '\t' || ch == '\n') {
+                    if (ch == '\n'){line++;}
                     string = "";
                     continue;
-                } else {
+                }
+                else {
                     string = "" + ch;
                     parts.add(string);
                     string = "";
@@ -92,6 +109,6 @@ public class Lexer {
             parts.add(string);
         }
 
-        this.lexemes = parts.toArray(new String[0]);
+        return parts.toArray(new String[0]);
     }
 }
