@@ -19,8 +19,9 @@ public class AppTest {
     public void testIntAssignment() {
 
         String input = "int num=12;";
-        Tokenizer tokenizer = new Tokenizer(input);
-        Token[] tokens = tokenizer.getTokens();
+//        Tokenizer tokenizer = new Tokenizer(input);
+        Lexer lexer = new Lexer(input);
+        Token[] tokens = lexer.getTokens();
 
         String want = "[Token{text=int, type=TYPE}, Token{text=num, type=IDENT}, Token{text==, type=ASSIGN}, Token{text=12, type=INTEGER}, Token{text=;, type=SEMICOLON}]";
 
@@ -34,8 +35,8 @@ public class AppTest {
     public void testStatementAssign() {
 
         String input = "int num=12;";
-        Tokenizer tokenizer = new Tokenizer(input);
-        Token[] tokens = tokenizer.getTokens();
+        Lexer lexer = new Lexer(input);
+        Token[] tokens = lexer.getTokens();
         String wantTokens = "[Token{text=int, type=TYPE}, Token{text=num, type=IDENT}, Token{text==, type=ASSIGN}, Token{text=12, type=INTEGER}, Token{text=;, type=SEMICOLON}]";
         boolean ok = Arrays.toString(tokens).equals(wantTokens);
         System.out.println("ok=" + ok);
@@ -57,8 +58,8 @@ public class AppTest {
     public void testStatementAssignEvaluate() {
 
         String input = "int num=12;";
-        Tokenizer tokenizer = new Tokenizer(input);
-        Token[] tokens = tokenizer.getTokens();
+        Lexer lexer = new Lexer(input);
+        Token[] tokens = lexer.getTokens();
         String wantTokens = "[Token{text=int, type=TYPE}, Token{text=num, type=IDENT}, Token{text==, type=ASSIGN}, Token{text=12, type=INTEGER}, Token{text=;, type=SEMICOLON}]";
         boolean ok = Arrays.toString(tokens).equals(wantTokens);
         System.out.println("ok=" + ok);
@@ -83,8 +84,8 @@ public class AppTest {
     public void testSimpleIntAssignment() {
 
         String input = "n=12;";
-        Tokenizer tokenizer = new Tokenizer(input);
-        Token[] tokens = tokenizer.getTokens();
+        Lexer lexer = new Lexer(input);
+        Token[] tokens = lexer.getTokens();
 
         String want = "[Token{text=n, type=IDENT}, Token{text==, type=ASSIGN}, Token{text=12, type=INTEGER}, Token{text=;, type=SEMICOLON}]";
 
@@ -104,8 +105,9 @@ public class AppTest {
     public void testFloatAssignment() {
         String input = "float fp = 3.14;";
 
-        Tokenizer tokenizer = new Tokenizer(input);
-        Token[] tokens = tokenizer.getTokens();
+        Lexer lexer = new Lexer(input);
+        Token[] tokens = lexer.getTokens();
+        System.out.println("tokens = " + tokens);
 
         String want = "[Token{text=float, type=TYPE}, Token{text=fp, type=IDENT}, Token{text==, type=ASSIGN}, Token{text=3.14, type=FLOAT}, Token{text=;, type=SEMICOLON}]";
 
@@ -119,8 +121,8 @@ public class AppTest {
     public void testStringLexing() {
         String input = "\"hi all.\"";
 
-        Tokenizer tokenizer = new Tokenizer(input);
-        Token[] tokens = tokenizer.getTokens();
+        Lexer lexer = new Lexer(input);
+        Token[] tokens = lexer.getTokens();
         System.out.println("tokens = " + Arrays.toString(tokens));
 
         String want = "[Token{text=\"hi all.\", type=STRING}]";
@@ -140,10 +142,8 @@ public class AppTest {
     public void testStringAssignment() {
         String input = "char greetings[] = \"Hello World!\";";
 
-        Tokenizer tokenizer = new Tokenizer(input);
-        System.out.println("tokenizer = " + tokenizer);
-
-        Token[] tokens = tokenizer.getTokens();
+        Lexer lexer = new Lexer(input);
+        Token[] tokens = lexer.getTokens();
         System.out.println("tokens = " + Arrays.toString(tokens));
 
         String want = "[Token{text=char, type=TYPE}, Token{text=greetings, type=IDENT}, Token{text=[, type=BRACK_OPEN}, Token{text=], type=BRACK_CLOSE}, Token{text==, type=ASSIGN}, Token{text=\"Hello World!\", type=STRING}, Token{text=;, type=SEMICOLON}]";

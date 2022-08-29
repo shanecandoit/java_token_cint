@@ -9,12 +9,14 @@ public class Lexer {
     public final String[] lexemes;
     public final String delimeters = " \n\t.;:'\",=[](){}";
 
-    private char[] chars;
+    private final char[] chars;
     private int i;
-    private String string;
+//    private String string;
     private int line;
+//    private Token[] tokens;
 
     public Lexer(String input){
+        this.chars = input.toCharArray();
         this.lexemes = lex(input);
     }
     // StringTokenizer(String str, String delim, boolean returnDelims)
@@ -24,45 +26,51 @@ public class Lexer {
         List<String> parts = new ArrayList<>();
 
         this.line = 1;
-        this.string = "";
+        String current = "";
         // String prev = "";
         char ch = '\0';
 
-        this.chars = input.toCharArray();
-        for (this.i = 0; i < chars.length; i++) {
+        for (this.i = 0; i < this.chars.length; i++) {
             ch = input.charAt(i);
 
             // string literals
             if (ch == '"') {
-                string += input.charAt(i);
+                current += input.charAt(i);
                 while (i < input.length()) {
                     i++;
                     if (input.charAt(i) == '"') {
-                        string += input.charAt(i);
-                        parts.add(string);
-                        string = "";
+                        current += input.charAt(i);
+                        parts.add(current);
+                        current = "";
                         break;
                     } else if (input.charAt(i) == '\n') {
-                        System.out.println("Err new line encountered mid-string." + line + ":" + string);
+                        System.out.println("Err new line encountered mid-string." + line + ":" + current);
 //                        this.lexemes = parts.toArray(new String[0]);
                         //return parts.toArray(new String[0]);
                         break;
                     }
-                    string += input.charAt(i);
+                    current += input.charAt(i);
                 }
                 continue;
             } else if (ch == '\n') {
                 line++;
             } else if (input.charAt(i) == '=' && i < input.length() && input.charAt(i + 1) == '=') {
-                parts.add(string);
-                string = "==";
+                parts.add(current);
+                current = "==";
                 i++;
+            } else if (ch == '+') {
+                if (current.length() > 0) {
+                    parts.add(current);
+                }
+                parts.add("+");
+                current = "";
+                continue;
             } else if (ch == '=') {
-                if (string.length() > 0) {
-                    parts.add(string);
+                if (current.length() > 0) {
+                    parts.add(current);
                 }
                 parts.add("=");
-                string = "";
+                current = "";
                 continue;
             } else if (ch == '.') {
                 // floating point?
@@ -70,45 +78,59 @@ public class Lexer {
                     char before = input.charAt(i - 1);
                     char after = input.charAt(i + 1);
                     if (Token.isInt("" + before) && Token.isInt("" + after)) {
-                        string = string + ".";
+                        current = current + ".";
                         continue;
                     }
                 } catch (Exception e) {
                     continue;
                 }
             } else if (ch==' '||ch=='\t'){
-                if (string.length()>1){
-                    parts.add(string);
+                if (current.length()>1){
+                    parts.add(current);
                 }
-                string="";
+                current="";
                 continue;
             }
 
             // newest char is a delimeter
             if (delimeters.contains("" + ch)) {
                 // split
-                if (string.length() > 0) {
-                    parts.add(string);
+                if (current.length() > 0) {
+                    parts.add(current);
                 }
                 if (ch == ' ' || ch == '\t' || ch == '\n') {
                     if (ch == '\n'){line++;}
-                    string = "";
+                    current = "";
                     continue;
                 }
                 else {
-                    string = "" + ch;
-                    parts.add(string);
-                    string = "";
+                    current = "" + ch;
+                    parts.add(current);
+                    current = "";
                 }
             } else {
                 // grew the word
-                string += ch;
+                current += ch;
             }
         }
-        if (string.length() > 0) {
-            parts.add(string);
+        if (current.length() > 0) {
+            parts.add(current);
         }
 
         return parts.toArray(new String[0]);
+    }
+
+    public Token[] getTokens() {
+        return tokenize();
+    }
+
+    private Token[] tokenize() {
+        List<Token> tokens = new ArrayList<>();
+
+        for (String string : this.lexemes) {
+            tokens.add(new Token(string));
+        }
+
+        return tokens.toArray(new Token[0]);
     }
 }

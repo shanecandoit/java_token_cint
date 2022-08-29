@@ -31,10 +31,9 @@ public class Parser {
     }
 
     public Parser(String input) {
-        Tokenizer tokenizer = new Tokenizer(input);
-        Token[] tokens = tokenizer.getTokens();
+        Lexer lexer = new Lexer(input);
 
-        this.tokens = tokens;
+        this.tokens = lexer.getTokens();
         this.environment = new HashMap<>();
 
         try {

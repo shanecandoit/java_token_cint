@@ -13,9 +13,10 @@ public class App {
     public static void main(String[] args) {
         System.out.println("interpret:");
 
-        String input = "int num=12;\n"
-                + "print(nm);";
+        String input = "int num = 12 + 1;\n"
+                + "print(num);";
         Parser parser = new Parser(input);
+
 
         String statements = parser.getProgramStatementsString();
         System.out.println("statements = " + statements);
@@ -45,9 +46,9 @@ public class App {
             if (input == null) {
                 break;
             }
-            Tokenizer tokenizer = new Tokenizer(input);
-            System.out.println("tokenizer = " + tokenizer);
-            Token[] tokens = tokenizer.getTokens();
+            Lexer lexer = new Lexer(input);
+            System.out.println("tokenizer = " + lexer);
+            Token[] tokens = lexer.getTokens();
             System.out.println("tokens = " + Arrays.toString(tokens));
 
             // TODO add the tokens to the interpreter
